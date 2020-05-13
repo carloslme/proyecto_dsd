@@ -8,7 +8,7 @@ print("Hello, " + name, "Time to play hangman!")
 
 print("")
 
-#wait for 1 second
+#wait for 1 secon
 time.sleep(1)
 
 print("Start guessing...")
