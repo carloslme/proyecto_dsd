@@ -7,6 +7,14 @@ import pickle
 import random
 import time
 
+
+HOST="127.0.0.1"
+PORT=int(input("Puerto: "))
+
+#HOSTS="127.0.0.1"
+#PORTS=5000
+
+
 time1 = ''
 timerC= 0
 Horas=random.randint(0,24)
@@ -20,6 +28,8 @@ class Cliente():
 	#def __init__(self, host="localhost", port=4000):
 	def __init__(self,host,port):
 		global play
+
+		self.Jerarquia_servers=[]
 		try:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.sock.connect((str(host), int(port)))
@@ -33,14 +43,39 @@ class Cliente():
 			print("player: ",data)
 			play=int(data)
 
+		data = self.sock.recv(4096)
+		self.Jerarquia_servers=pickle.loads(data)
+		print("Jerarquia_servers:",self.Jerarquia_servers)
+
+		recv = threading.Thread(target=self.msg_recv)
+		recv.daemon = True
+		recv.start() 
+
 	def msg_recv(self):
-		global turno
+		global turno,play,HOSTS,PORTS
 		while True:
 			try:
 				data = self.sock.recv(4096).decode()
-				turno=int(data)
+				if(data):
+					turno=int(data)
+				else:
+					print("Se perdio la conexion con el server, reconectando a otro...")
+					self.reconexion()
 			except:
 				pass
+
+	def reconexion(self):
+		for rec in self.Jerarquia_servers:
+			try:
+				self.sock.close() 
+				time.sleep(0.1)
+				self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				self.sock.connect((rec[0],rec[1]))
+				self.sock.sendall(str.encode(str(play)))
+				print("conectado al nuevo")
+				break
+			except Exception as e:
+				print("Servidor: ",rec,"no disponible")
 
 	def send_msg(self, msg,hora):
 		mensaje=msg+","+hora
@@ -53,8 +88,6 @@ class Cliente():
 #	pass
 
 #HOST="192.168.100.130"
-HOST="127.0.0.1"
-PORT=int(input("Puerto: "))
 c = Cliente(HOST,PORT)
 
 shell=Tk()
@@ -96,7 +129,7 @@ def Aceptar(letra,frase):
 		if(turno==1):
 			c.send_msg(letra,time1)
 			messagebox.showinfo("AYE","Letra enviada a las: "+time1)
-			#letra.config(text="")
+			letraE.delete('0',END)
 			turno=0
 		else:
 			messagebox.showinfo("AYE","No es tu turno")
@@ -105,9 +138,18 @@ def Aceptar(letra,frase):
 			c.send_msg(frase,time1)
 			messagebox.showinfo("AYE","Frase enviada a las: "+time1)
 			turno=0
-			#frase.config(text="")
+			fraseE.delete('0',END)
 		else:
 			messagebox.showinfo("AYE","No es tu turno")
+	elif(letra=='' and frase==''):
+		if(turno==1):
+			c.send_msg("N/D",time1)
+			messagebox.showinfo("AYE","No enviaste nada: "+time1)
+			letraE.delete('0',END)
+			turno=0
+		else:
+			messagebox.showinfo("AYE","No es tu turno")
+
 	timerC=0
 
 ####esta toma una hora aleatorea
@@ -131,7 +173,7 @@ def tick():
 
 def cronometro():
 	global timerC,turno
-	if(timerC>10):
+	if(timerC>20):
 		Aceptar(letraE.get(),fraseE.get()) ##si se acaba el tiempo se ejecuta el boton aceptar
 		messagebox.showinfo("AYE","Se acabo el timepo, pero se envio lo escrito")
 
@@ -157,10 +199,10 @@ def tick2():
         hora.config(text=time2)
     hora.after(200, tick2)
 
-recv = threading.Thread(target=c.msg_recv)
+#recv = threading.Thread(target=c.msg_recv)
 
-recv.daemon = True
-recv.start() 
+#recv.daemon = True
+#recv.start() 
 
 tick() ##invoqua la funcion de la hora aleatorea
 cronometro() #Invoque la funcion de el cronometro
