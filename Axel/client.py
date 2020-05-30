@@ -78,8 +78,10 @@ class Cliente():
 				print("Servidor: ",rec,"no disponible")
 
 	def send_msg(self, msg,hora):
+		global turno
 		mensaje=msg+","+hora
 		self.sock.sendall(str.encode(mensaje))
+		turno=0
 		print()
 
 
