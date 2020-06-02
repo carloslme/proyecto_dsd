@@ -258,8 +258,8 @@ class Servidor():
 			if self.time1 == "":
 				self.time1 = datetime.strptime(str(hora_fecha_converted), "%Y-%m-%d %H:%M:%S")
 			else:
-				#self.time1 = synchronizeTime(self.time1, '13.84.128.25', 10000)
-				self.time1 = synchronizeTime(self.time1, HostServerTime, PuertoServerTime)
+				self.time1 = synchronizeTime(self.time1, '13.84.128.25', 10000)
+				# self.time1 = synchronizeTime(self.time1, HostServerTime, PuertoServerTime)
 
 				
 			#print('Nueva hora: ' + str(self.time1))
