@@ -1,0 +1,9 @@
+CREATE DATABASE dbservertime;
+USE dbservertime;
+
+CREATE TABLE data(
+	id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	ip   VARCHAR(45) NOT NULL,
+	puerto VARCHAR(45) NOT NULL,
+	hora_enviada VARCHAR(45) NOT NULL
+)ENGINE=InnoDB;

@@ -528,6 +528,19 @@ class Servidor():
 					self.Cjugadores=0+len(self.Hclient)
 					self.jugConect=0+len(self.Hclient)
 					break
+
+			except ConnectionResetError:
+				print("Se perdio la conexion con el servidor:",self.Cserver.index(c))
+				if(self.Cserver.index(c)==0):
+					self.c.inactivo=1
+				else:
+					self.c1.inactivo=1
+				self.badera_error=1
+				self.Njugadores=self.jugConect
+				self.Cjugadores=0+len(self.Hclient)
+				self.jugConect=0+len(self.Hclient)
+				break
+			
 			except:
 				pass
 

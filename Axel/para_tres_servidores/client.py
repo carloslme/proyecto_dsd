@@ -61,8 +61,8 @@ class Cliente():
 				else:
 					print("Se perdio la conexion con el server, reconectando a otro...")
 					self.reconexion()
-			except Exception as e:
-				print('############## Se perdio la conexion con el server', str(e))
+			except socket.error:
+				print('############## Se perdio la conexion con el server')
 				self.reconexion()
 				pass
 
