@@ -28,15 +28,16 @@ def synchronizeTime(actual_time, host, port):
 	try:
 		s = socket.socket()
 		# print('-------------------------')
-		#print("Actual clock time at client side: " + str(actual_time))
+		# print("Actual clock time at client side: " + str(actual_time))
 		# connect to the clock server on local computer
 		# s.connect(('13.84.128.25', port))
 		s.connect((host, port))
-
+		s.settimeout(1)
 		request_time = timer()
 
 		# receive data from the server
 		server_time = parser.parse(s.recv(1024).decode())
+		
 		response_time = timer()
 		# actual_time = datetime.datetime.now()
 
@@ -44,7 +45,8 @@ def synchronizeTime(actual_time, host, port):
 
 		process_delay_latency = response_time - request_time
 
-		# print("Process Delay latency: " + str(process_delay_latency) + " seconds")
+		# print("Process Delay latency: " +
+			#   str(process_delay_latency) + " seconds")
 
 		# synchronize process client clock time
 		client_time = server_time + timedelta(process_delay_latency)
@@ -53,17 +55,24 @@ def synchronizeTime(actual_time, host, port):
 
 		# calculate synchronization error
 		error = actual_time - client_time
-		# print("Synchronization error : " + str(error.total_seconds()) + " seconds")
-
+		# print("Synchronization error : " +
+			#   str(error.total_seconds()) + " seconds")
 		s.close()
 		return client_time
 	except Exception as e:
-		print('··········No se pudo realizar la conexión con el servidor de tiempo: ' + str(e))
-		return actual_time
+		print(
+			'··········No se pudo realizar la conexión con el servidor de tiempo: ' + str(e))
+		return addOneSecond(actual_time)
+	finally:
+		s.close()
 
 def timedelta(process_delay_latency):
-		import datetime
-		return datetime.timedelta(seconds=(process_delay_latency) / 2)
+	import datetime
+	return datetime.timedelta(seconds=(process_delay_latency) / 2)
+
+def addOneSecond(actual_time):
+	import datetime
+	return actual_time + datetime.timedelta(0,1)
 
 # Funcion que conecta a la base de datos y registra un registro en la base
 class mysqlconn():
@@ -195,6 +204,7 @@ class Servidor():
 		self.horainicio="00:00:00"
 
 		aceptar = threading.Thread(target=self.aceptarCon)   #demonio o proceso de aceptar conecciones
+		hora = threading.Thread(target=self.tick)
 
 		self.conmysql= mysqlconn()
 		idfrase=random.randint(1, 100)
@@ -211,8 +221,8 @@ class Servidor():
 		aceptar.daemon = True
 		aceptar.start()
 
-		#hora.daemon = True
-		#hora.start()
+		hora.daemon = True
+		hora.start()
 		# self.Jerarquia_servers.append(("127.0.0.1",9000))
 		portc=int(input("Puerto Cliente Servidor 1: "))###
 		self.c = Cliente(HOST1,portc)####
@@ -235,36 +245,36 @@ class Servidor():
 
 	def tick(self):  #funcion  de hacer que funcione el reloj
 		while True:
-			# ESTO comentado tomaria la hora de la pc 
+			# ESTO comentado tomaria la hora de la pc
 			# time2 = time.strftime('%H:%M:%S')
 			# if time2 != self.time1:
-			 #   self.time1 = time2
+			#   self.time1 = time2
 			# time.sleep(0.90)
 			# print(self.time1)
-			global Horas,Min,Seg, Fecha, HostServerTime,PuertoServerTime
-			if(Horas==24 and Min==59 and Seg==59):
-				Horas=0
-				Min=0
-				Seg=0
-			if(Min==59 and Seg==59):
-				Horas+=1
-				Min=0
-				Seg=0
-			if(Seg==59):
-				Min+=1
-				Seg=0
+			global Horas, Min, Seg, Fecha
+			if(Horas == 23 and Min == 59 and Seg == 59):
+				Horas = 0
+				Min = 0
+				Seg = 0
+			if(Min == 59 and Seg == 59):
+				Horas += 1
+				Min = 0
+				Seg = 0
+			if(Seg == 59):
+				Min += 1
+				Seg = 0
 			hora_aleatoria = str(Horas)+":"+str(Min)+":"+str(Seg)
 			hora_fecha_converted = datetime.strptime(Fecha + ' ' + hora_aleatoria, "%Y-%m-%d %H:%M:%S")
-			if self.time1 == "":
+			if self.time1 == "00:00:00":
 				self.time1 = datetime.strptime(str(hora_fecha_converted), "%Y-%m-%d %H:%M:%S")
+			# if self.time1 == "error":
+			#	   print('····· Se dejo de recibir la hora del servidor: ' + str(e))
+			#	   self.time1 = datetime.strptime(str(hora_fecha_converted), "%Y-%m-%d %H:%M:%S")
 			else:
-				self.time1 = synchronizeTime(self.time1, '13.84.128.25', 10000)
-				# self.time1 = synchronizeTime(self.time1, HostServerTime, PuertoServerTime)
-
-				
-			#print('Nueva hora: ' + str(self.time1))
+				self.time1 = synchronizeTime(self.time1, '104.210.151.197', 10000)
+				#self.time1 = synchronizeTime(self.time1, '127.0.0.1', 60000)
 			time.sleep(1)
-			Seg+=1
+			Seg += 1
 				
 	def msg_to_all(self, msg): #funcion que envia un mensaje a todos los clientes
 		for c in self.clientes:
@@ -332,56 +342,56 @@ class Servidor():
 		print("Tu frase secreta es: " + ''.join(self.progresolist))
 
 	def ahorcado(self,letter,name):
-	    if letter in self.progreso:
-	        print("Ya habian adivinado esta letra.")
-	        self.errores-=1
-	    else:
-	        self.progreso.append(letter)
-	        if(len(letter) == 1):
-	            if(letter in self.fraselist):
-	                print("¡Acertaste!")
-	                if(self.errores > 0):
-	                    print("¡Te quedan ", self.errores, 'intentos!')
-	                for i in range(len(self.fraselist)):
-	                    if(letter == self.fraselist[i]):
-	                        letterIndex = i
-	                        self.progresolist[letterIndex] = letter.upper()
-	                self.printGuessedLetter()
-	    
-	            else:
-	            	self.errores-=1
-	            	print("¡Ups! Intentalo de nuevo.")
-	            	if(self.errores > 0):
-	            		print("¡Te quedan ", self.errores, 'intentos!')
-	            	self.printGuessedLetter()
-	        elif(letter.upper() == self.frase.upper()):
-	            print('¡Acertaste! La palabra secreta es: ', self.frase.upper())
-	            print()
-	            self.progresolist=self.frase.upper()
-	            print("¡Ha ganado el jugador:",name+1,"!")
-	            self.ganado=True
-	            self.end=1
+		if letter in self.progreso:
+			print("Ya habian adivinado esta letra.")
+			self.errores-=1
+		else:
+			self.progreso.append(letter)
+			if(len(letter) == 1):
+				if(letter in self.fraselist):
+					print("¡Acertaste!")
+					if(self.errores > 0):
+						print("¡Te quedan ", self.errores, 'intentos!')
+					for i in range(len(self.fraselist)):
+						if(letter == self.fraselist[i]):
+							letterIndex = i
+							self.progresolist[letterIndex] = letter.upper()
+					self.printGuessedLetter()
+		
+				else:
+					self.errores-=1
+					print("¡Ups! Intentalo de nuevo.")
+					if(self.errores > 0):
+						print("¡Te quedan ", self.errores, 'intentos!')
+					self.printGuessedLetter()
+			elif(letter.upper() == self.frase.upper()):
+				print('¡Acertaste! La palabra secreta es: ', self.frase.upper())
+				print()
+				self.progresolist=self.frase.upper()
+				print("¡Ha ganado el jugador:",name+1,"!")
+				self.ganado=True
+				self.end=1
 
-	        else:
-	        	self.errores-=1
-	        	if(self.errores > 0):
-	        		print("¡Te quedan ", self.errores, 'intentos!')
-	        	self.printGuessedLetter()
+			else:
+				self.errores-=1
+				if(self.errores > 0):
+					print("¡Te quedan ", self.errores, 'intentos!')
+				self.printGuessedLetter()
 
-	    #Win/loss logic for the game
-	    joinedList = ''.join(self.progresolist)
-	    if(joinedList.upper() == self.frase.upper()):
-	        print('¡Bien hecho!')
-	        print()
-	        print("¡Ha ganado el jugador:",name+1,"!")
-	        self.ganado=True
-	        self.end=1
+		#Win/loss logic for the game
+		joinedList = ''.join(self.progresolist)
+		if(joinedList.upper() == self.frase.upper()):
+			print('¡Bien hecho!')
+			print()
+			print("¡Ha ganado el jugador:",name+1,"!")
+			self.ganado=True
+			self.end=1
 
-	    elif(self.errores == 0):
-	        print("Perdiste")
-	        print("La frase secreta era: "+ self.frase.upper())
-	        print('¡Adiós!')
-	        self.end=1
+		elif(self.errores == 0):
+			print("Perdiste")
+			print("La frase secreta era: "+ self.frase.upper())
+			print('¡Adiós!')
+			self.end=1
 
 	def ver_conexion(self,c,name,h):
 		while True:
@@ -549,9 +559,9 @@ class Servidor():
 #PORT=int(input("Puerto Servidor 1: "))
 
 # variables para la hora random
-Horas=random.randint(0,24)
-Min=random.randint(0,59)
-Seg=random.randint(0,59)
-Fecha = datetime.today().strftime('%Y-%m-%d') # Se agrega fecha del sistema
+Horas = random.randint(0, 24)
+Min = random.randint(0, 59)
+Seg = random.randint(0, 59)
+Fecha = datetime.today().strftime('%Y-%m-%d')
 # enviamos a la clase server el host y el puerto
 s = Servidor(HOST,PORT)
