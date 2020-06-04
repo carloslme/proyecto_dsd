@@ -1,5 +1,5 @@
-CREATE DATABASE BaseServerP2;
-USE BaseServerP2;
+CREATE DATABASE baseserverp2;
+USE baseserverp2;
 
 CREATE TABLE data(
 	id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

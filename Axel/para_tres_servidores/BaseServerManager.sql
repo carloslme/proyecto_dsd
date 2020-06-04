@@ -1,5 +1,5 @@
-CREATE DATABASE BaseServerManager;
-USE BaseServerManager;
+CREATE DATABASE baseservermanager;
+USE baseservermanager;
 
 CREATE TABLE data(
 	id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
