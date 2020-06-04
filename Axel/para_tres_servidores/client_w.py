@@ -65,6 +65,8 @@ class Cliente():
 				print('############## Se perdio la conexion con el server')
 				self.reconexion()
 				pass
+			except:
+				pass
 
 	def reconexion(self):
 		for rec in self.Jerarquia_servers:

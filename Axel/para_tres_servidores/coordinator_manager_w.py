@@ -46,7 +46,7 @@ def synchronizeTime(actual_time, host, port):
 		process_delay_latency = response_time - request_time
 
 		# print("Process Delay latency: " +
-			#   str(process_delay_latency) + " seconds")
+		# 	  str(process_delay_latency) + " seconds")
 
 		# synchronize process client clock time
 		client_time = server_time + timedelta(process_delay_latency)
@@ -56,7 +56,7 @@ def synchronizeTime(actual_time, host, port):
 		# calculate synchronization error
 		error = actual_time - client_time
 		# print("Synchronization error : " +
-			#   str(error.total_seconds()) + " seconds")
+		# 	  str(error.total_seconds()) + " seconds")
 		s.close()
 		return client_time
 	except Exception as e:
@@ -273,6 +273,7 @@ class Servidor():
 			else:
 				self.time1 = synchronizeTime(self.time1, '104.210.151.197', 10000)
 				#self.time1 = synchronizeTime(self.time1, '127.0.0.1', 60000)
+
 			time.sleep(1)
 			Seg += 1
 				

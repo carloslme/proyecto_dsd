@@ -56,7 +56,7 @@ def initiateClockServer():
 		# Close the connection with the client process
 		connection.close()
 
-# Driver function
+# Driver function   
 if __name__ == '__main__':
 
 	# Trigger the Clock Server
