@@ -10,11 +10,11 @@ from datetime import datetime
 from dateutil import parser
 from timeit import default_timer as timer
 
-HOST="127.0.0.1"
+HOST="127.0.0.1" # IP Server Three 70.37.86.59
 PORT=int(input("Puerto Servidor 1: "))
 
-HOST1="127.0.0.1"
-HOST2="127.0.0.1"
+HOST1="70.37.61.169" # IP Coordinador Manager - Server One
+HOST2="104.44.136.187" # IP Coordinador Sustituto 1 - Server Two
 
 HostServerTime="127.0.0.1"
 PuertoServerTime=6000
