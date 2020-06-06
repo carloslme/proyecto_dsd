@@ -9,7 +9,7 @@ import multiprocessing
 from datetime import datetime
 from dateutil import parser
 from timeit import default_timer as timer
-
+ 
 HOST="127.0.0.1" # IP Server Two 104.44.136.187
 PORT=int(input("Puerto Servidor 1: "))
 
