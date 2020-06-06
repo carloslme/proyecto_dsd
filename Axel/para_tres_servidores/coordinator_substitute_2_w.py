@@ -26,7 +26,7 @@ DBMYSQL="baseserverp2"
 
 def synchronizeTime(actual_time, host, port):
 	try:
-		s = socket.socket()
+		s = socket.socket() 
 		# print('-------------------------')
 		# print("Actual clock time at client side: " + str(actual_time))
 		# connect to the clock server on local computer
