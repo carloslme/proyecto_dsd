@@ -9,12 +9,12 @@ import multiprocessing
 from datetime import datetime
 from dateutil import parser
 from timeit import default_timer as timer
-
-HOST="127.0.0.1"
+ 
+HOST="127.0.0.1" # IP Server Two 104.44.136.187
 PORT=int(input("Puerto Servidor 1: "))
 
-HOST1="127.0.0.1"
-HOST2="127.0.0.1"
+HOST1="70.37.61.169" # IP Coordinador Manager - Server One
+HOST2="70.37.86.59" # IP Coordinador Sustituto 2 - Server Three
 
 HostServerTime="127.0.0.1"
 PuertoServerTime=6000
@@ -26,7 +26,7 @@ DBMYSQL="baseserverp1"
 
 def synchronizeTime(actual_time, host, port):
 	try:
-		s = socket.socket()
+		s = socket.socket() 
 		# print('-------------------------')
 		# print("Actual clock time at client side: " + str(actual_time))
 		# connect to the clock server on local computer
