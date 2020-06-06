@@ -10,8 +10,8 @@ from datetime import datetime
 from dateutil import parser
 from timeit import default_timer as timer
 
-HOST="127.0.0.1" # IP Server Three 70.37.86.59
-PORT=int(input("Puerto Servidor 1: "))
+HOST="" # IP Server Three 70.37.86.59
+PORT=7000
 
 HOST1="70.37.61.169" # IP Coordinador Manager - Server One
 HOST2="104.44.136.187" # IP Coordinador Sustituto 1 - Server Two
@@ -76,7 +76,7 @@ def addOneSecond(actual_time):
 
 # Funcion que conecta a la base de datos y registra un registro en la base
 class mysqlconn():
-	def _init_(self):
+	def __init__(self):
 		global HOSTMYSQL,USERMYSQL,PASSWORDMYSQL,DBMYSQL
 		self.connection = pymysql.connect(	
 			host=HOSTMYSQL,
@@ -116,8 +116,8 @@ class mysqlconn():
 
 class Cliente():
 	"""docstring for Cliente"""
-	# def _init_(self, host="localhost", port=4000):
-	def _init_(self,host,port):
+	# def __init__(self, host="localhost", port=4000):
+	def __init__(self,host,port):
 		self.inactivo=0
 		try:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -159,8 +159,8 @@ class Cliente():
 
 class Servidor():
 	"""docstring for Servidor"""
-	def _init_(self, host, port):
-	# def _init_(self, host="10.100.71.107", port=4000):
+	def __init__(self, host, port):
+	# def __init__(self, host="10.100.71.107", port=4000):
 
 		#self.principal=1 #bandera que indica que es el server pricipal si es 1, 0  si es secundario
 		self.badera_error=0 #variable que se prende si se desconecto el Gestor principal
