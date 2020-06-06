@@ -19,7 +19,7 @@ HOST2="104.44.136.187" # IP Coordinador Sustituto 1 - Server Two
 HostServerTime="127.0.0.1"
 PuertoServerTime=6000
 
-HOSTMYSQL="localhost"
+HOSTMYSQL="localhost" 
 USERMYSQL="root"
 PASSWORDMYSQL="1234"
 DBMYSQL="baseserverp2"
