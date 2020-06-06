@@ -13,7 +13,7 @@ from timeit import default_timer as timer
 HOST="127.0.0.1" # IP Server One 70.37.61.169
 PORT=int(input("Puerto Servidor 1: "))
 
-HOST1="104.44.136.187" #IP Coordinador Sustituto 1 - Server Two 
+HOST1="104.44.136.187" #IP Coordinador Sustituto 1 - Server Two
 HOST2="70.37.86.59" #IP Coordinador Sustituto 2 - Server Three
 
 HostServerTime="127.0.0.1"
