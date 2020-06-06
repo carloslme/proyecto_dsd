@@ -33,7 +33,7 @@ def initiateClockServer():
 	print("Socket successfully created")
 
 	# Server port
-	port = 10000
+	port = 5000
 
 	s.bind(('', port))
 
@@ -51,7 +51,7 @@ def initiateClockServer():
 		connection.send(str(datetime.datetime.now()).encode())
 
 		# Data sent is saved
-		mysqlconn(address[0], address[1], str(datetime.datetime.now()).encode())
+		#mysqlconn(address[0], address[1], str(datetime.datetime.now()).encode())
 
 		# Close the connection with the client process
 		connection.close()
