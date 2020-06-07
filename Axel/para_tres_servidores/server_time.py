@@ -34,10 +34,14 @@ def initiateClockServer():
 
 	# Server port
 <<<<<<< HEAD
+<<<<<<< HEAD
 	port = 5000
 =======
 	port = 6000
 >>>>>>> 34b60189b50c6ac0c6bad177c34d26faa09e5289
+=======
+	port = 7000
+>>>>>>> 49a2fda4aece4ebd1d53cf6302dec825fd609b6e
 
 	s.bind(('', port))
 
