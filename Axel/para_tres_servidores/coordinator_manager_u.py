@@ -16,8 +16,8 @@ PORT=5000
 HOST1="104.44.136.187" #IP Coordinador Sustituto 1 - Server Two
 HOST2="70.37.86.59" #IP Coordinador Sustituto 2 - Server Three
 
-HostServerTime="127.0.0.1"
-PuertoServerTime=6000
+HostServerTime="104.210.151.197"
+PuertoServerTime=10000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root"
@@ -207,7 +207,7 @@ class Cliente():
 	def rcv_DB(self):
 		while True:
 			try:
-				data = self.sock.recv(4096)
+				data = self.sock.recv(10096)
 				tablanew=pickle.loads(data)
 				return tablanew[0],tablanew[1]
 				break
@@ -297,6 +297,7 @@ class Servidor():
 		Jcliente=(HOST1,portc)
 		self.Jerarquia_servers.append(Jcliente)
 		tablanew,tablanew2=self.c.rcv_DB()
+		time.sleep(0.01)
 		self.conmysql.DBreplicar("data",self.tabla,tablanew)
 		self.conmysql.DBreplicares("resultados",self.tabla2,tablanew2)
 
@@ -379,12 +380,13 @@ class Servidor():
 					tablaLEncode=pickle.dumps(replicar)
 					try:
 						conn.sendall(tablaLEncode)
+						time.sleep(0.01)
 						print()
 					except Exception as e:
 						print('Excepción: ', e)
 				else:
 					if(self.badera_error==1):
-						data=conn.recv(1024).decode() 
+						data=conn.recv(4024).decode() 
 						print("mi usuario es:",data)
 						player=data
 					else:
@@ -405,6 +407,7 @@ class Servidor():
 				pass
 			if(self.Cjugadores==self.Njugadores):
 				if(self.badera_error!=1):
+					self.horainicio=self.time1
 					cont=0
 					for c in self.clientes:
 						c.sendall(str.encode(str(self.name[cont])))
