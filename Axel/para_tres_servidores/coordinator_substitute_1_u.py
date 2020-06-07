@@ -263,7 +263,7 @@ class Servidor():
 
 
 		aceptar = threading.Thread(target=self.aceptarCon)   #demonio o proceso de aceptar conecciones
-		#hora = threading.Thread(target=self.tick)
+		hora = threading.Thread(target=self.tick)
 
 		self.conmysql= mysqlconn()
 		##########################################################
@@ -288,8 +288,8 @@ class Servidor():
 		aceptar.daemon = True
 		aceptar.start()
 
-		#hora.daemon = True
-		#hora.start()
+		hora.daemon = True
+		hora.start()
 
 		# self.Jerarquia_servers.append(("127.0.0.1",9000))
 		portc=int(input("Puerto Cliente Servidor 1: "))###
