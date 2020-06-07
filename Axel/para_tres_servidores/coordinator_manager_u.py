@@ -111,8 +111,47 @@ class mysqlconn():
 			maxid=0
 		else:
 			maxid=maxid[0]
-		print("dato:",maxid)
 		return maxid
+
+	def mytabla(self,tabla):
+		tablaL=[]
+		tam=self.maxid(tabla)
+		if(tam>0):
+			for i in range (1,tam+1):
+				sql= "select * from `"+tabla+"`"+" where `id` = %s" 
+				self.cursor.execute(sql,(i))
+				dato = self.cursor.fetchall()
+				tablaL.append(dato[0])
+		return tablaL
+
+	def DBreplicar(self, tabla, tablaL, tablaLnew):
+		tamtablaL=len(tablaL)
+		tamtablaLnew=len(tablaLnew)
+		print(tamtablaL)
+		print(tamtablaLnew)
+		if(tamtablaLnew>tamtablaL):
+			print("iniciando replicacion")
+			truncate="TRUNCATE TABLE "+tabla
+			self.cursor.execute(truncate)
+			for i in range (0,tamtablaLnew):
+				self.myinsert(tablaLnew[i][1],tablaLnew[i][2],tablaLnew[i][3],tablaLnew[i][4],tablaLnew[i][5])
+			print("replicacion terminada")
+		else:
+			print("la base actual esta correcta")
+
+	def DBreplicares(self, tabla, tablaL, tablaLnew):
+		tamtablaL=len(tablaL)
+		tamtablaLnew=len(tablaLnew)
+		print(tamtablaL)
+		print(tamtablaLnew)
+		if(tamtablaLnew>tamtablaL):
+			print("iniciando replicacion")
+			truncate="TRUNCATE TABLE "+tabla
+			self.cursor.execute(truncate)
+			for i in range (0,tamtablaLnew):
+				self.myinsertresult(tablaLnew[i][1],tablaLnew[i][2],tablaLnew[i][3],tablaLnew[i][4],tablaLnew[i][5],tablaLnew[i][6],tablaLnew[i][7])
+		else:
+			print("la base actual esta correcta")
 
 class Cliente():
 	"""docstring for Cliente"""
@@ -156,10 +195,29 @@ class Cliente():
 		except:
 			pass
 
+	def send_tableDB(self,tablaL):
+		tablaLEncode=pickle.dumps(tablaL)
+		if(self.inactivo!=1):
+			try:
+				self.sock.sendall(tablaLEncode)
+				print()
+			except Exception as e:
+				print('Excepción: ', e)
+
+	def rcv_DB(self):
+		while True:
+			try:
+				data = self.sock.recv(4096)
+				tablanew=pickle.loads(data)
+				return tablanew[0],tablanew[1]
+				break
+			except:
+				pass
+
 
 class Servidor():
 	"""docstring for Servidor"""
-	def __init__(self, host, port):
+	def __init__ (self, host, port):
 	# def _init_(self, host="10.100.71.107", port=4000):
 
 		#self.principal=1 #bandera que indica que es el server pricipal si es 1, 0  si es secundario
@@ -203,10 +261,19 @@ class Servidor():
 		self.time1="00:00:00" #variable donde se guarda la hora
 		self.horainicio="00:00:00"
 
+
 		aceptar = threading.Thread(target=self.aceptarCon)   #demonio o proceso de aceptar conecciones
-		hora = threading.Thread(target=self.tick)
+		#hora = threading.Thread(target=self.tick)
 
 		self.conmysql= mysqlconn()
+		##########################################################
+		self.tabla=[]
+		self.tabla2=[]
+		self.tabla=self.conmysql.mytabla("data")
+		self.tabla2=self.conmysql.mytabla("resultados")
+		#self.conmysql.DBreplicar("data",self.tabla,self.tabla)
+		##########################################################
+
 		idfrase=random.randint(1, 100)
 		dato=self.conmysql.myselect(idfrase)
 		self.frase=dato[0][2].lower()
@@ -221,18 +288,25 @@ class Servidor():
 		aceptar.daemon = True
 		aceptar.start()
 
-		hora.daemon = True
-		hora.start()
+		#hora.daemon = True
+		#hora.start()
+
 		# self.Jerarquia_servers.append(("127.0.0.1",9000))
 		portc=int(input("Puerto Cliente Servidor 1: "))###
 		self.c = Cliente(HOST1,portc)####
 		Jcliente=(HOST1,portc)
 		self.Jerarquia_servers.append(Jcliente)
+		tablanew,tablanew2=self.c.rcv_DB()
+		self.conmysql.DBreplicar("data",self.tabla,tablanew)
+		self.conmysql.DBreplicares("resultados",self.tabla2,tablanew2)
 
 		portc=int(input("Puerto Cliente Servidor 2: "))###
 		self.c1 = Cliente(HOST2,portc)####
 		Jcliente=(HOST2,portc)
 		self.Jerarquia_servers.append(Jcliente)
+		tablanew,tablanew2=self.c1.rcv_DB()
+		self.conmysql.DBreplicar("data",self.tabla,tablanew)
+		self.conmysql.DBreplicares("resultados",self.tabla2,tablanew2)
 
 
 		while True:  #ciclo infinito para que pueda enviar mensajes a todos los clientes
@@ -251,7 +325,7 @@ class Servidor():
 			#   self.time1 = time2
 			# time.sleep(0.90)
 			# print(self.time1)
-			global Horas, Min, Seg, Fecha
+			global Horas, Min, Seg, Fecha, HostServerTime, PuertoServerTime
 			if(Horas == 23 and Min == 59 and Seg == 59):
 				Horas = 0
 				Min = 0
@@ -271,7 +345,7 @@ class Servidor():
 			#	   print('····· Se dejo de recibir la hora del servidor: ' + str(e))
 			#	   self.time1 = datetime.strptime(str(hora_fecha_converted), "%Y-%m-%d %H:%M:%S")
 			else:
-				self.time1 = synchronizeTime(self.time1, '104.210.151.197', 10000)
+				self.time1 = synchronizeTime(self.time1, HostServerTime, PuertoServerTime)
 				#self.time1 = synchronizeTime(self.time1, '127.0.0.1', 60000)
 
 			time.sleep(1)
@@ -284,6 +358,7 @@ class Servidor():
 				print("mensaje enviado\n")
 			except:
 				self.clientes.remove(c)
+
 
 	def aceptarCon(self):   #funcion que es el demonio que acepta a los clientes 
 		print("aceptarCon iniciado")
@@ -298,6 +373,15 @@ class Servidor():
 					self.ipServers.append(addr)
 					hilo_Cserver.daemon=True
 					hilo_Cserver.start()
+					replicar=[]
+					replicar.append(self.tabla)
+					replicar.append(self.tabla2)
+					tablaLEncode=pickle.dumps(replicar)
+					try:
+						conn.sendall(tablaLEncode)
+						print()
+					except Exception as e:
+						print('Excepción: ', e)
 				else:
 					if(self.badera_error==1):
 						data=conn.recv(1024).decode() 
