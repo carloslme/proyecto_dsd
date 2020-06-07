@@ -17,7 +17,7 @@ HOST1="127.0.0.1"
 HOST2="127.0.0.1"
 
 HostServerTime="127.0.0.1"
-PuertoServerTime=6000
+PuertoServerTime=4000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root"
