@@ -155,11 +155,8 @@ class mysqlconn():
 
 class Cliente():
 	"""docstring for Cliente"""
-<<<<<<< HEAD
 	# def __init__(self, host="localhost", port=4000):
-=======
 	# def _init_(self, host="localhost", port=4000):
->>>>>>> 665e0b27dda989adaa9fa30373b2b9d58a3c782c
 	def __init__(self,host,port):
 		self.inactivo=0
 		try:
@@ -221,13 +218,9 @@ class Cliente():
 
 class Servidor():
 	"""docstring for Servidor"""
-<<<<<<< HEAD
-	def __init__(self, host, port):
-	# def __init__(self, host="10.100.71.107", port=4000):
-=======
+
 	def __init__ (self, host, port):
 	# def _init_(self, host="10.100.71.107", port=4000):
->>>>>>> 665e0b27dda989adaa9fa30373b2b9d58a3c782c
 
 		#self.principal=1 #bandera que indica que es el server pricipal si es 1, 0  si es secundario
 		self.badera_error=0 #variable que se prende si se desconecto el Gestor principal
