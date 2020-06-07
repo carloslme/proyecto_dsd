@@ -10,19 +10,19 @@ from datetime import datetime
 from dateutil import parser
 from timeit import default_timer as timer
 
-HOST="" # IP Server One 70.37.61.169
-PORT=5000
+HOST="127.0.0.1"
+PORT=int(input("Puerto Servidor 1: "))
 
-HOST1="104.44.136.187" #IP Coordinador Sustituto 1 - Server Two
-HOST2="70.37.86.59" #IP Coordinador Sustituto 2 - Server Three
+HOST1="127.0.0.1"
+HOST2="127.0.0.1"
 
-HostServerTime="127.0.0.1"
-PuertoServerTime=6000
+HostServerTime='104.210.151.197'
+PuertoServerTime=10000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root"
-PASSWORDMYSQL="rootroot"
-DBMYSQL="baseservermanager"
+PASSWORDMYSQL="9343"
+DBMYSQL="baseserverp2"
 
 def synchronizeTime(actual_time, host, port):
 	try:
@@ -135,7 +135,6 @@ class mysqlconn():
 			self.cursor.execute(truncate)
 			for i in range (0,tamtablaLnew):
 				self.myinsert(tablaLnew[i][1],tablaLnew[i][2],tablaLnew[i][3],tablaLnew[i][4],tablaLnew[i][5])
-			print("replicacion terminada")
 		else:
 			print("la base actual esta correcta")
 
@@ -150,6 +149,7 @@ class mysqlconn():
 			self.cursor.execute(truncate)
 			for i in range (0,tamtablaLnew):
 				self.myinsertresult(tablaLnew[i][1],tablaLnew[i][2],tablaLnew[i][3],tablaLnew[i][4],tablaLnew[i][5],tablaLnew[i][6],tablaLnew[i][7])
+			print("replicacion terminada")
 		else:
 			print("la base actual esta correcta")
 
