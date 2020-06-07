@@ -33,7 +33,11 @@ def initiateClockServer():
 	print("Socket successfully created")
 
 	# Server port
+<<<<<<< HEAD
 	port = 6000
+=======
+	port = 5000
+>>>>>>> 665e0b27dda989adaa9fa30373b2b9d58a3c782c
 
 	s.bind(('', port))
 

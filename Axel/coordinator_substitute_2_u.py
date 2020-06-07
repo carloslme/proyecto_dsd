@@ -10,19 +10,19 @@ from datetime import datetime
 from dateutil import parser
 from timeit import default_timer as timer
 
-HOST="" # IP Server Two 104.44.136.187
-PORT=6000
+HOST="127.0.0.1"
+PORT=int(input("Puerto Servidor 1: "))
 
-HOST1="70.37.61.169" # IP Coordinador Manager - Server One
-HOST2="70.37.86.59" # IP Coordinador Sustituto 2 - Server Three
+HOST1="127.0.0.1"
+HOST2="127.0.0.1"
 
-HostServerTime="127.0.0.1"
-PuertoServerTime=6000
+HostServerTime='104.210.151.197'
+PuertoServerTime=10000
 
 HOSTMYSQL="localhost"
-USERMYSQL="root2"
-PASSWORDMYSQL="root"
-DBMYSQL="baseserverp1"
+USERMYSQL="root"
+PASSWORDMYSQL="9343"
+DBMYSQL="baseserverp2"
 
 def synchronizeTime(actual_time, host, port):
 	try:
@@ -155,11 +155,7 @@ class mysqlconn():
 
 class Cliente():
 	"""docstring for Cliente"""
-<<<<<<< HEAD
-	# def __init__(self, host="localhost", port=4000):
-=======
 	# def _init_(self, host="localhost", port=4000):
->>>>>>> 665e0b27dda989adaa9fa30373b2b9d58a3c782c
 	def __init__(self,host,port):
 		self.inactivo=0
 		try:
@@ -221,13 +217,8 @@ class Cliente():
 
 class Servidor():
 	"""docstring for Servidor"""
-<<<<<<< HEAD
-	def __init__(self, host, port):
-	# def __init__(self, host="10.100.71.107", port=4000):
-=======
 	def __init__ (self, host, port):
 	# def _init_(self, host="10.100.71.107", port=4000):
->>>>>>> 665e0b27dda989adaa9fa30373b2b9d58a3c782c
 
 		#self.principal=1 #bandera que indica que es el server pricipal si es 1, 0  si es secundario
 		self.badera_error=0 #variable que se prende si se desconecto el Gestor principal

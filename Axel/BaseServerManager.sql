@@ -1,5 +1,5 @@
-CREATE DATABASE baseserverp1;
-USE baseserverp1;
+CREATE DATABASE baseservermanager;
+USE baseservermanager;
 
 CREATE TABLE data(
 	id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -12,9 +12,9 @@ CREATE TABLE data(
 
 CREATE TABLE resultados(
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	ipganador VARCHAR(45) NOT NULL,
-	jugador VARCHAR(45) NOT NULL,
-	letra VARCHAR(100) NOT NULL,
+	ipganador VARCHAR(45),
+	jugador VARCHAR(45),
+	letra VARCHAR(100),
 	frase VARCHAR(100) NOT NULL,
 	ganado BOOLEAN NOT NULL,
 	horajugado VARCHAR(45) NOT NULL,
