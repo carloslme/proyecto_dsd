@@ -204,7 +204,7 @@ class Cliente():
 			except Exception as e:
 				print('Excepción: ', e)
 
-	def rcv_DB(self):
+	def rcv_DB(self): 
 		while True:
 			try:
 				data = self.sock.recv(10096)
