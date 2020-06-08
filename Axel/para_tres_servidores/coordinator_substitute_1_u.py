@@ -192,7 +192,7 @@ class Cliente():
 		vistaEncode=pickle.dumps(vista)
 		try:
 			self.sock.sendall(vistaEncode)
-			print()
+			print() 
 		except:
 			pass
 
