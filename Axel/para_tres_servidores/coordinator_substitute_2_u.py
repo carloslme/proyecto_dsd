@@ -206,7 +206,7 @@ class Cliente():
 				print('Excepción: ', e)
 
 	def rcv_DB(self):
-		while True:
+		while True: 
 			try:
 				data = self.sock.recv(10096)
 				tablanew=pickle.loads(data)
