@@ -16,8 +16,8 @@ PORT=7000
 HOST1="70.37.61.169" # IP Coordinador Manager - Server One
 HOST2="104.44.136.187" # IP Coordinador Sustituto 1 - Server Two
 
-HostServerTime="127.0.0.1"
-PuertoServerTime=6000
+HostServerTime="104.210.151.197"
+PuertoServerTime=10000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root2"
@@ -206,9 +206,9 @@ class Cliente():
 				print('Excepción: ', e)
 
 	def rcv_DB(self):
-		while True:
+		while True: 
 			try:
-				data = self.sock.recv(4096)
+				data = self.sock.recv(10096)
 				tablanew=pickle.loads(data)
 				return tablanew[0],tablanew[1]
 				break
@@ -290,7 +290,7 @@ class Servidor():
 		aceptar.daemon = True
 		aceptar.start()
 
-	    hora.daemon = True
+		hora.daemon = True
 		hora.start()
 
 		# self.Jerarquia_servers.append(("127.0.0.1",9000))
@@ -386,7 +386,7 @@ class Servidor():
 						print('Excepción: ', e)
 				else:
 					if(self.badera_error==1):
-						data=conn.recv(1024).decode() 
+						data=conn.recv(4024).decode() 
 						print("mi usuario es:",data)
 						player=data
 					else:
@@ -407,6 +407,7 @@ class Servidor():
 				pass
 			if(self.Cjugadores==self.Njugadores):
 				if(self.badera_error!=1):
+					self.horainicio=self.time1
 					cont=0
 					for c in self.clientes:
 						c.sendall(str.encode(str(self.name[cont])))
