@@ -21,7 +21,7 @@ PuertoServerTime=10000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root"
-PASSWORDMYSQL="1234"
+PASSWORDMYSQL="rootroot"
 DBMYSQL="baseservermanager"
 
 TURNO = 0
@@ -487,7 +487,7 @@ class Servidor():
 			print("¡Ha ganado el jugador:",name+1,"!")
 			self.ganado=True
 			self.end=1
-			print('%%%%%%%%%%%%%%%%%Se ha terminado el juego: ', self.end)
+			print("!!!!!!!!!!!!!Se ha terminado el juego: ", self.end)
 
 		elif(self.errores == 0):
 			print("Perdiste")
@@ -576,7 +576,7 @@ class Servidor():
 						##name+1
 					else:
 						self.conmysql.myinsertresult('','','',self.frase,self.ganado,horaC,self.horainicio)
-					self.end=0
+					#self.end=0
 					sys.exit()
 				if(self.turno in self.name):
 					index=self.name.index(self.turno)
@@ -629,9 +629,8 @@ class Servidor():
 								print("Juego perdido")
 
 							print("El juego termino")
-							self.end=0
+							#self.end=0
 							sys.exit()
-							del s
 						if(self.turno in self.name):
 							index=self.name.index(self.turno) 
 							self.event[index].set()

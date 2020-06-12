@@ -280,7 +280,7 @@ class Servidor():
 		print(self.frase)
 		self.fraselist = list(self.frase)
 
-		self.maxidresultados=self.conmysql.maxid("resultados")+1
+		
 
 
 		self.Njugadores=int(input("ingrese el numero de jugadores: "))
@@ -309,7 +309,7 @@ class Servidor():
 		self.conmysql.DBreplicar("data",self.tabla,tablanew)
 		self.conmysql.DBreplicares("resultados",self.tabla2,tablanew2)
 
-
+		self.maxidresultados=self.conmysql.maxid("resultados")+1
 		while True:  #ciclo infinito para que pueda enviar mensajes a todos los clientes
 			msg = input()
 			if msg == 'salir':	#si escribes salir se cierra el servidor
