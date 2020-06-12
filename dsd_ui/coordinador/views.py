@@ -39,16 +39,7 @@ def index(request):
                                           'timer': datetime.strftime(s.time1, "%A, %B %d %Y \n %H:%M:%S"),
                                           'time': time})
 
-def execute_server(request):
-    #server = threading.Thread(target=execute_thread)
-    #server.daemon = True
-    #server.start()
-    #import coordinador.manager as m
-    return render(request, 'index.html', {'pelicula': s.pelicula.upper(), 'frase':s.progresoS.upper()})
-    
-def execute_thread():
-   s =  Servidor('',5000)
-   print('--------------------------- s.frase', s.frase)
+
 
 
 # enviamos a la clase server el host y el puerto
