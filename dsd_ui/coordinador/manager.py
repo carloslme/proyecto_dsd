@@ -292,7 +292,7 @@ class Servidor():
 		self.maxidresultados=self.conmysql.maxid("resultados")+1
 
 
-		self.Njugadores=1
+		self.Njugadores=2
 		self.turnoMaximo=self.Njugadores
 		aceptar.daemon = True
 		aceptar.start()
@@ -379,7 +379,7 @@ class Servidor():
 				conn, addr = self.sock.accept()
 				conn.setblocking(False)
 				print(conn)
-				if(len(self.Cserver)==2):
+				if(len(self.Cserver)<2):
 					hilo_Cserver=threading.Thread(name="Server",target=self.procesarServer, args=(conn,))
 					self.Cserver.append(conn)
 					self.ipServers.append(addr)
