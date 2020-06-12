@@ -17,89 +17,6 @@
 </head>
 
 <body>
-  <div id="demo" class="carousel slide" data-ride="carousel">
-  
-    <!-- Indicators -->
-    <ul class="carousel-indicators">
-      <li data-target="#demo" data-slide-to="0" class="active"></li>
-      <li data-target="#demo" data-slide-to="1"></li>
-      <li data-target="#demo" data-slide-to="2"></li>
-      <li data-target="#demo" data-slide-to="3"></li>
-      <li data-target="#demo" data-slide-to="4"></li>
-      <li data-target="#demo" data-slide-to="5"></li>
-      <li data-target="#demo" data-slide-to="6"></li>
-      <li data-target="#demo" data-slide-to="7"></li>
-      <li data-target="#demo" data-slide-to="8"></li>
-      <li data-target="#demo" data-slide-to="9"></li>
-      <li data-target="#demo" data-slide-to="10"></li>
-      <li data-target="#demo" data-slide-to="11"></li>
-      <li data-target="#demo" data-slide-to="12"></li>
-      <li data-target="#demo" data-slide-to="13"></li>
-      <li data-target="#demo" data-slide-to="14"></li>
-      <li data-target="#demo" data-slide-to="15"></li>
-    </ul>
-    
-    <!-- The slideshow -->
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="/static/images/alicia.jpg" alt="Los Angeles">
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/vengadores.jpg" alt="Chicago" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/huevos.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/avatar.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/coco.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/elpadrino.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/forrest.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/hercules.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/jurassicpark.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/monsterinc.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/nemo.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/reyleon.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/shrek.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/starwars.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/strange.jpg" alt="New York" >
-      </div>
-      <div class="carousel-item">
-        <img src="/static/images/volveralfuturo.jpg" alt="New York" >
-      </div>
-    </div>
-    
-    <!-- Left and right controls -->
-    <a class="carousel-control-prev" href="#demo" data-slide="prev" hidden="True">
-      <span class="carousel-control-prev-icon"></span>
-    </a>
-    <a class="carousel-control-next" href="#demo" data-slide="next" hidden="True">
-      <span class="carousel-control-next-icon"></span>
-    </a>
-  </div>
-  
   <div class="center-div">
     <div>
       <h1 style="background-color:white; margin-top:-80px">PELICULA: {{pelicula}}</h1>
@@ -115,13 +32,13 @@
         <p>errors = {{errors}}</p>
           {% if status == 1 and errors > 0 %}
             <div class="col-md-3"></div>
-            <div class="alert alert-success col-md-6" id="result">
+            <div class="alert alert-success col-md-6" id="result" style="margin-top:-40px">
                 <strong>¡El jugador {{player}} ganó!</strong>
             </div>
             <div class="col-md-3"></div>
           {% elif errors == 0 %}
             <div class="col-md-3"></div>
-            <div class="alert alert-danger col-md-6" id="result">
+            <div class="alert alert-danger col-md-6" id="result" style="margin-top:-120px; margin-left:25%">
                 <strong>¡Juego perdido!</strong> La respuesta es <strong>"{{ phrase }}"</strong>.
             </div>
             <div class="col-md-3"></div>
