@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from coordinador.sustituto_1 import Servidor
+from coordinador.sustituto_2 import Servidor
 import threading
 import multiprocessing
 import locale
@@ -8,7 +8,7 @@ from datetime import datetime
 from dateutil import parser
 
 PROGRESO_FRASE = ''
-s = Servidor('',6000)
+s = Servidor('',7000)
 # image = "/static/images/hang0.gif"
 flag = False
 time = 1000
