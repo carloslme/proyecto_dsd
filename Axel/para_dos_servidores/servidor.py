@@ -16,7 +16,7 @@ PORT=int(input("Puerto Servidor 1: "))
 HOST1="127.0.0.1"
 
 HostServerTime="127.0.0.1"
-PuertoServerTime=6000
+PuertoServerTime=5000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root"

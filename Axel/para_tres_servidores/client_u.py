@@ -8,8 +8,10 @@ import random
 import time
 
 
-HOST="127.0.0.1"
-PORT=int(input("Puerto: "))
+#HOST="70.37.61.169"
+HOST="104.44.136.187"
+# HOST="localhost"
+PORT=6000
 
 #HOSTS="127.0.0.1"
 #PORTS=5000
