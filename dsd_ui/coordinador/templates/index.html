@@ -11,12 +11,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
+    <!-- <link rel="stylesheet" href="/static/hangman.css?version=1"> -->
     <link rel="stylesheet" href="/static/hangman.css?version=1">
     {% comment %} <link rel="stylesheet" type="text/css" href="{% static '/styles/style.css' %}?version=1" /> {% endcomment %}
     <title>Juego del ahorcado</title>
 </head>
 
 <body>
+
   <div class="center-div">
     <div>
       <h1 style="background-color:white; margin-top:-80px">PELICULA: {{pelicula}}</h1>
@@ -28,8 +30,8 @@
         <div>
           <h3 id="display"> {{frase}}  </h3>
         </div>
-        <p>status = {{status}}</p>
-        <p>errors = {{errors}}</p>
+        <!-- <p>status = {{status}}</p>
+        <p>errors = {{errors}}</p> -->
           {% if status == 1 and errors > 0 %}
             <div class="col-md-3"></div>
             <div class="alert alert-success col-md-6" id="result" style="margin-top:-40px">
@@ -38,7 +40,7 @@
             <div class="col-md-3"></div>
           {% elif errors == 0 %}
             <div class="col-md-3"></div>
-            <div class="alert alert-danger col-md-6" id="result" style="margin-top:-120px; margin-left:25%">
+            <div class="alert alert-danger col-md-6" id="result" style="margin-top:-120px; margin-left: 1%">
                 <strong>¡Juego perdido!</strong> La respuesta es <strong>"{{ phrase }}"</strong>.
             </div>
             <div class="col-md-3"></div>

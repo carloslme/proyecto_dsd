@@ -21,7 +21,7 @@ PuertoServerTime=10000
 
 HOSTMYSQL="localhost"
 USERMYSQL="root"
-PASSWORDMYSQL="1234"
+PASSWORDMYSQL="rootroot"
 DBMYSQL="baseservermanager"
 
 TURNO = 0
@@ -182,7 +182,7 @@ class Cliente():
 			self.sock.sendall(mensajeEncode)
 
 
-	def send_replicar(self,Contjugadores,JC,jugadores_perdidos,turno,frase,errores,progreso,progresolist,ganado,end):
+	def send_replicar(self,Contjugadores,JC,jugadores_perdidos,turno,frase,errores,progreso,progresolist,ganado,end,pelicula):
 		vista=[1]
 		vista.append(Contjugadores)
 		vista.append(JC)
@@ -194,6 +194,7 @@ class Cliente():
 		vista.append(progresolist)
 		vista.append(ganado)
 		vista.append(end)
+		vista.append(pelicula)
 		vistaEncode=pickle.dumps(vista)
 		try:
 			self.sock.sendall(vistaEncode)
@@ -213,7 +214,7 @@ class Cliente():
 	def rcv_DB(self): 
 		while True:
 			try:
-				data = self.sock.recv(10096)
+				data = self.sock.recv(1000096)
 				tablanew=pickle.loads(data)
 				return tablanew[0],tablanew[1]
 				break
@@ -251,6 +252,7 @@ class Servidor():
 		self.progresoS="N/D"
 		self.end=0
 		self.ganado=False
+		self.Pganador=''
 
 		self.fraselist =[]
 		self.progresolist = [] # Esta es la frase
@@ -289,10 +291,8 @@ class Servidor():
 		print(self.frase)
 		self.fraselist = list(self.frase)
 
-		self.maxidresultados=self.conmysql.maxid("resultados")+1
 
-
-		self.Njugadores=1
+		self.Njugadores=3
 		self.turnoMaximo=self.Njugadores
 		aceptar.daemon = True
 		aceptar.start()
@@ -300,8 +300,8 @@ class Servidor():
 		hora.daemon = True
 		hora.start()
 
-		#--------  
-		'''
+		 
+		
 		# self.Jerarquia_servers.append(("127.0.0.1",9000))
 		portc=int(input("Puerto Cliente Servidor 1: "))###
 		self.c = Cliente(HOST1,portc)####
@@ -319,7 +319,9 @@ class Servidor():
 		tablanew,tablanew2=self.c1.rcv_DB()
 		self.conmysql.DBreplicar("data",self.tabla,tablanew)
 		self.conmysql.DBreplicares("resultados",self.tabla2,tablanew2)
-		'''
+
+		self.maxidresultados=self.conmysql.maxid("resultados")+1
+		
 
 		# while True:  #ciclo infinito para que pueda enviar mensajes a todos los clientes
 		# 	msg = input()
@@ -379,7 +381,7 @@ class Servidor():
 				conn, addr = self.sock.accept()
 				conn.setblocking(False)
 				print(conn)
-				if(len(self.Cserver)==-1):
+				if(len(self.Cserver)<2):
 					hilo_Cserver=threading.Thread(name="Server",target=self.procesarServer, args=(conn,))
 					self.Cserver.append(conn)
 					self.ipServers.append(addr)
@@ -410,8 +412,8 @@ class Servidor():
 					self.Cjugadores+=1
 					self.jugConect+=1
 					self.clientes.append(conn)   #agrega al cliente a la lista de cleintes
-					#self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
-					#self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
+					self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
+					self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
 					self.ipclientes.append(addr)		 #agrega la ip de el cleinte a la lista de ips
 				# print(self.clientes)
 			except: 
@@ -444,7 +446,6 @@ class Servidor():
 		if letter in self.progreso:
 			print("Ya habian adivinado esta letra.")
 			self.errores-=1
-			###self.errores_conteo=10-self.errores
 		else:
 			self.progreso.append(letter)
 			if(len(letter) == 1):
@@ -487,7 +488,7 @@ class Servidor():
 			print("¡Ha ganado el jugador:",name+1,"!")
 			self.ganado=True
 			self.end=1
-			print('%%%%%%%%%%%%%%%%%Se ha terminado el juego: ', self.end)
+			print("!!!!!!!!!!!!!Se ha terminado el juego: ", self.end)
 
 		elif(self.errores == 0):
 			print("Perdiste")
@@ -522,9 +523,9 @@ class Servidor():
 		JeSe=pickle.dumps(self.Jerarquia_servers)
 		c.sendall(JeSe)
 		####
-		#-------- verificar=threading.Thread(name="verificar "+str(name),target=self.ver_conexion, args=(c,name,threading.currentThread()))
-		#-------- verificar.daemon=True
-		#-------- verificar.start()
+		verificar=threading.Thread(name="verificar "+str(name),target=self.ver_conexion, args=(c,name,threading.currentThread()))
+		verificar.daemon=True
+		verificar.start()
 		####
 		while True:
 			event_is_set = e.wait()  ##espera  a que le notifiquen que puede pasar
@@ -546,8 +547,8 @@ class Servidor():
 					print("=============== Cliente: ",ip,"\nMensaje: ",mensaje," A las: ",horaC)  #imprime la ip de el cliente, su mensaje , y su hora de el cliente
 					self.ahorcado(mensaje,name)
 					time.sleep(0.1)
-					#-------- self.c.send_msg(mensaje,horaC,ip,name) #le manda el mensaje que recibio al otro server####
-					#-------- self.c1.send_msg(mensaje,horaC,ip,name)
+					self.c.send_msg(mensaje,horaC,ip,name) #le manda el mensaje que recibio al otro server####
+					self.c1.send_msg(mensaje,horaC,ip,name)
 					self.conmysql.myinsert(self.maxidresultados,ip,mensaje,horaC,self.time1)  #manda a la funcion de mysql, los datod que quieres guardar en la base
 					
 				time.sleep(0.2)
@@ -562,8 +563,8 @@ class Servidor():
 						break
 				self.progresoS=''.join(self.progresolist)
 				print("jugConect:",self.jugConect,"Turno:",self.turno,"frase: ",self.frase,"errores: ",self.errores,"progreso:",self.progresoS)
-				#-------- self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
-				#-------- self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
+				self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
+				self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
 				TURNO = self.turno
 				FRASE = self.frase
 				ERRORES = 10-self.errores 
@@ -573,10 +574,10 @@ class Servidor():
 				if (self.end==1):
 					if(self.ganado==True):
 						self.conmysql.myinsertresult(ip,name+1,mensaje,self.frase,self.ganado,horaC,self.horainicio)
-						##name+1
+						self.Pganador=name+1
 					else:
 						self.conmysql.myinsertresult('','','',self.frase,self.ganado,horaC,self.horainicio)
-					self.end=0
+					#self.end=0
 					sys.exit()
 				if(self.turno in self.name):
 					index=self.name.index(self.turno)
@@ -612,6 +613,7 @@ class Servidor():
 						self.progresolist=data[8]
 						self.ganado=data[9]
 						self.end=data[10]
+						self.pelicula=data[11]
 						self.fraselist=list(self.frase)
 						self.progresoS=''.join(self.progresolist) # Progreso 
 						PROGRESO = self.progresoS
@@ -622,16 +624,16 @@ class Servidor():
 							if(self.ganado==True):
 								self.conmysql.myinsertresult(ipjugador,namejugador+1,mensaje,self.frase,self.ganado,horaC,self.horainicio)
 								print("El juego lo gano el jugador:",namejugador+1)
-								self.end=0
+								self.Pganador=namejugador+1
+								#self.end=0
 								sys.exit()
 							else:
 								self.conmysql.myinsertresult('','','',self.frase,self.ganado,horaC,self.horainicio)
 								print("Juego perdido")
 
 							print("El juego termino")
-							self.end=0
+							#self.end=0
 							sys.exit()
-							del s
 						if(self.turno in self.name):
 							index=self.name.index(self.turno) 
 							self.event[index].set()
