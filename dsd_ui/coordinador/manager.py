@@ -182,7 +182,7 @@ class Cliente():
 			self.sock.sendall(mensajeEncode)
 
 
-	def send_replicar(self,Contjugadores,JC,jugadores_perdidos,turno,frase,errores,progreso,progresolist,ganado,end):
+	def send_replicar(self,Contjugadores,JC,jugadores_perdidos,turno,frase,errores,progreso,progresolist,ganado,end,pelicula):
 		vista=[1]
 		vista.append(Contjugadores)
 		vista.append(JC)
@@ -194,6 +194,7 @@ class Cliente():
 		vista.append(progresolist)
 		vista.append(ganado)
 		vista.append(end)
+		vista.append(pelicula)
 		vistaEncode=pickle.dumps(vista)
 		try:
 			self.sock.sendall(vistaEncode)
@@ -213,7 +214,7 @@ class Cliente():
 	def rcv_DB(self): 
 		while True:
 			try:
-				data = self.sock.recv(10096)
+				data = self.sock.recv(1000096)
 				tablanew=pickle.loads(data)
 				return tablanew[0],tablanew[1]
 				break
@@ -251,6 +252,7 @@ class Servidor():
 		self.progresoS="N/D"
 		self.end=0
 		self.ganado=False
+		self.Pganador=''
 
 		self.fraselist =[]
 		self.progresolist = [] # Esta es la frase
@@ -289,10 +291,8 @@ class Servidor():
 		print(self.frase)
 		self.fraselist = list(self.frase)
 
-		self.maxidresultados=self.conmysql.maxid("resultados")+1
 
-
-		self.Njugadores=2
+		self.Njugadores=3
 		self.turnoMaximo=self.Njugadores
 		aceptar.daemon = True
 		aceptar.start()
@@ -319,6 +319,8 @@ class Servidor():
 		tablanew,tablanew2=self.c1.rcv_DB()
 		self.conmysql.DBreplicar("data",self.tabla,tablanew)
 		self.conmysql.DBreplicares("resultados",self.tabla2,tablanew2)
+
+		self.maxidresultados=self.conmysql.maxid("resultados")+1
 		
 
 		# while True:  #ciclo infinito para que pueda enviar mensajes a todos los clientes
@@ -410,8 +412,8 @@ class Servidor():
 					self.Cjugadores+=1
 					self.jugConect+=1
 					self.clientes.append(conn)   #agrega al cliente a la lista de cleintes
-					self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
-					self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
+					self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
+					self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
 					self.ipclientes.append(addr)		 #agrega la ip de el cleinte a la lista de ips
 				# print(self.clientes)
 			except: 
@@ -561,8 +563,8 @@ class Servidor():
 						break
 				self.progresoS=''.join(self.progresolist)
 				print("jugConect:",self.jugConect,"Turno:",self.turno,"frase: ",self.frase,"errores: ",self.errores,"progreso:",self.progresoS)
-				self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
-				self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end)
+				self.c.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
+				self.c1.send_replicar(self.Cjugadores,self.jugConect,self.jugadores_perdidos,self.turno,self.frase,self.errores,self.progreso,self.progresolist,self.ganado,self.end,self.pelicula)
 				TURNO = self.turno
 				FRASE = self.frase
 				ERRORES = 10-self.errores 
@@ -572,7 +574,7 @@ class Servidor():
 				if (self.end==1):
 					if(self.ganado==True):
 						self.conmysql.myinsertresult(ip,name+1,mensaje,self.frase,self.ganado,horaC,self.horainicio)
-						##name+1
+						self.Pganador=name+1
 					else:
 						self.conmysql.myinsertresult('','','',self.frase,self.ganado,horaC,self.horainicio)
 					#self.end=0
@@ -611,6 +613,7 @@ class Servidor():
 						self.progresolist=data[8]
 						self.ganado=data[9]
 						self.end=data[10]
+						self.pelicula=data[11]
 						self.fraselist=list(self.frase)
 						self.progresoS=''.join(self.progresolist) # Progreso 
 						PROGRESO = self.progresoS
@@ -621,6 +624,7 @@ class Servidor():
 							if(self.ganado==True):
 								self.conmysql.myinsertresult(ipjugador,namejugador+1,mensaje,self.frase,self.ganado,horaC,self.horainicio)
 								print("El juego lo gano el jugador:",namejugador+1)
+								self.Pganador=namejugador+1
 								#self.end=0
 								sys.exit()
 							else:

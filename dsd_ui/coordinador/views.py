@@ -34,7 +34,7 @@ def index(request):
                                           'image': image, 
                                           'status': s.end,
                                           'errors': s.errores,
-                                          'player': s.turno+1,
+                                          'player': s.Pganador,
                                           'phrase': s.frase.upper(),
                                           'timer': datetime.strftime(s.time1, "%A, %B %d %Y \n %H:%M:%S"),
                                           'time': time})
